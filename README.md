@@ -1,5 +1,7 @@
 # Maxun on Railway
 
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/new/template/maxun-1?utm_medium=integration&utm_source=button&utm_campaign=maxun)
+
 Railway template for [Maxun](https://github.com/getmaxun/maxun) **v0.1.0**, the open-source no-code platform that turns websites into structured APIs: record robots in the browser, then scrape, crawl, search and monitor pages on a schedule or through the REST API.
 
 ## What it deploys
