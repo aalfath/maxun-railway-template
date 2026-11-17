@@ -1,0 +1,42 @@
+{
+	admin off
+	auto_https off
+	persist_config off
+	servers {
+		trusted_proxies static private_ranges
+	}
+}
+
+:{$PORT} {
+	encode gzip
+
+	# Health check for Railway: answers only when the backend is up.
+	handle /healthz {
+		rewrite * /
+		reverse_proxy 127.0.0.1:8081
+	}
+
+	# Run screenshots, read straight from the private object storage.
+	@screenshots {
+		method GET HEAD
+		path /maxun-run-screenshots/*
+	}
+	handle @screenshots {
+		reverse_proxy {$STORAGE_UPSTREAM} {
+			header_up Host {upstream_hostport}
+		}
+	}
+
+	# Backend routes. `/proxy` and `/recording*` alone are UI pages, so match sub-paths only.
+	@backend path /auth /auth/* /storage /storage/* /record/* /workflow /workflow/* /proxy/* /webhook /webhook/* /integration/* /api /api/* /api-docs /api-docs/* /socket.io/*
+	handle @backend {
+		reverse_proxy 127.0.0.1:8081
+	}
+
+	# Web UI (single-page app).
+	handle {
+		root * /srv/maxun
+		try_files {path} /index.html
+		file_server
+	}
+}
